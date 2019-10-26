@@ -9,6 +9,8 @@ def build(rel, att, od):
     # Create tree JSON variable
     b_plus_tree = {}
     
+    # Ensure that proper path for the desired rel_att is fetched
+    
     # Import the column on which index is to be made
 
     # Pick page to write to from the page pool
