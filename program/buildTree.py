@@ -1,13 +1,12 @@
 import json
 import random
 import functools
+import helper
 
 
 def build(rel, att, od):
     # Import page pool
-    page_pool = open('../index/pagePool.txt', 'r')
-    page_pool_list = json.loads(page_pool.read())
-    page_pool.close()
+    page_pool_list = helper.read_from_file_to_list("../index/pagePool.txt")
 
     # Create tree JSON variable
     b_plus_tree = {}
@@ -16,20 +15,14 @@ def build(rel, att, od):
     path = "../data/" + rel + "/"
 
     # fetch relation schemas
-    schemas = open('../data/schemas.txt', 'r')
-    schemas_list = json.loads(schemas.read())
-    schemas.close()
-    index = [] 
+    schemas_list = helper.read_from_file_to_list("../data/schemas.txt")
     index = list(map(lambda a: a[3] if (a[0] == rel and a[1] == att) else 0, schemas_list))[0]
 
     # Import the column on which index is to be made
     column_data = [att]
-    rel_page_link = open(path + 'pageLink.txt','r')
-    rel_page_link_list = json.loads(rel_page_link.read())
-    rel_page_link.close()
+    rel_page_link_list = helper.read_from_file_to_list(path + "pageLink.txt")
     for item in rel_page_link_list:
-        single_tuple_file = open(path + item, 'r')
-        tuples_in_file = json.loads(single_tuple_file.read())
+        tuples_in_file = helper.read_from_file_to_list(path + item)
         for eachTuple in tuples_in_file:
             column_data.append(eachTuple[index])
 
@@ -49,3 +42,4 @@ def build(rel, att, od):
 
     # Write page pool list back to file
     return
+    
