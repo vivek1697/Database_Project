@@ -1,23 +1,43 @@
-import ast, random
+import json
+import random
+import functools
 
 
 def build(rel, att, od):
     # Import page pool
-    page_pool = open('data.txt', 'r')
-    page_pool_list = ast.literal_eval(page_pool.read())
-    
+    page_pool = open('../index/pagePool.txt', 'r')
+    page_pool_list = json.loads(page_pool.read())
+    page_pool.close()
+
     # Create tree JSON variable
     b_plus_tree = {}
-    
+
     # Ensure that proper path for the desired rel_att is fetched
-    
+    path = "../data/" + rel + "/"
+
+    # fetch relation schemas
+    schemas = open('../data/schemas.txt', 'r')
+    schemas_list = json.loads(schemas.read())
+    schemas.close()
+    index = [] 
+    index = list(map(lambda a: a[3] if (a[0] == rel and a[1] == att) else 0, schemas_list))[0]
+
     # Import the column on which index is to be made
+    column_data = [att]
+    rel_page_link = open(path + 'pageLink.txt','r')
+    rel_page_link_list = json.loads(rel_page_link.read())
+    rel_page_link.close()
+    for item in rel_page_link_list:
+        single_tuple_file = open(path + item, 'r')
+        tuples_in_file = json.loads(single_tuple_file.read())
+        for eachTuple in tuples_in_file:
+            column_data.append(eachTuple[index])
 
     # Pick page to write to from the page pool
-    selected_page = random.choice(page_pool_list)
-    
+    # selected_page = random.choice(page_pool_list)
+
     # Remove from the page pool list
-    page_pool_list.remove(selected_page)
+    # page_pool_list.remove(selected_page)
 
     # Create node in the selected page variable
 
