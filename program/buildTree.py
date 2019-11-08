@@ -131,7 +131,7 @@ def build(rel, att, od):
         tree_json[each.name] = temp
 
     # print the tree just in case as a json
-    print(tree_json)
+    # print(tree_json)
 
     # write the page pool back !!! IMPORTANT !!!! DO NOT FORGET
     
@@ -144,4 +144,4 @@ def build(rel, att, od):
 
     return
 
-build("Supply", "pid", 2) # TO TEST 
+# build("Supply", "pid", 2) # TO TEST 
