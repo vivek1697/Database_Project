@@ -1,10 +1,7 @@
 import json
 import random
-import functools
-import helper
 import bPlusTreeNodeStructs # This file is VERY IMPORTANT!!! It contains helper functions that I have created and defined to use for building the B+ Tree
 import os
-import collections
 
 def build(rel, att, od):
     # Import page pool
@@ -19,8 +16,8 @@ def build(rel, att, od):
     content = open(os.path.join(os.path.dirname(__file__), "../data/schemas.txt"), 'r')
     schemas_list = json.loads(content.read())
     content.close()
-    index = list(filter(lambda x : x != 0, list(map(lambda a: a[3] if (
-        a[0] == rel and a[1] == att) else 0, schemas_list))))[0]
+    index = list(filter(lambda x : x != None, list(map(lambda a: a[3] if (
+        a[0] == rel and a[1] == att) else None, schemas_list))))[0]
 
     # Import the column on which index is to be made
     att_column_data = []
@@ -134,7 +131,7 @@ def build(rel, att, od):
         tree_json[each.name] = temp
 
     # print the tree just in case as a json
-    # print(tree_json)
+    print(tree_json)
 
     # write the page pool back !!! IMPORTANT !!!! DO NOT FORGET
     
@@ -147,4 +144,4 @@ def build(rel, att, od):
 
     return
 
-# build("Supply", "pid", 2) # TO TEST 
+build("Supply", "pid", 2) # TO TEST 
