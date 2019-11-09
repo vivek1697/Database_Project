@@ -171,11 +171,6 @@ def join(rel1, att1, rel2, att2):
     
     return
 
-<<<<<<< HEAD
 # project("Supply",["pid"])
 # join("Products", "pid", "Supply", "pid")
-=======
-
-select("Suppliers", "sid", "<", "s04")
-# project("Supply",["pid"])
->>>>>>> d40348e6ce7ffe5ede828604d2b06e4938db35fe
+# select("Suppliers", "sid", "<", "s04")
