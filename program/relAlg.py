@@ -48,6 +48,57 @@ def project(rel, attList):
     return
 
 def join(rel1, att1, rel2, att2):
+    # Import page pool
+    content = open(os.path.join(os.path.dirname(__file__), "../data/pagePool.txt"), 'r')
+    page_pool_list = json.loads(content.read())
+    content.close()
+
+    # fetch all tuples in rel1
+    path = "../data/" + rel1 + "/"
+    rel1_data = []
+    content = open(os.path.join(os.path.dirname(__file__), path + "pageLink.txt"), 'r')
+    rel_page_link_list = json.loads(content.read())
+    content.close()
+    for item in rel_page_link_list:
+        content = open(os.path.join(os.path.dirname(__file__), path + item), 'r')
+        tuples_in_file = json.loads(content.read())
+        content.close()
+        for eachTuple in tuples_in_file:
+            rel1_data.append(eachTuple)
+
+    # fetch all tuples in rel2
+    path = "../data/" + rel2 + "/"
+    rel2_data = []
+    content = open(os.path.join(os.path.dirname(__file__), path + "pageLink.txt"), 'r')
+    rel_page_link_list = json.loads(content.read())
+    content.close()
+    for item in rel_page_link_list:
+        content = open(os.path.join(os.path.dirname(__file__), path + item), 'r')
+        tuples_in_file = json.loads(content.read())
+        content.close()
+        for eachTuple in tuples_in_file:
+            rel2_data.append(eachTuple)
+
+    # fetch the index of att1 and att2
+    content = open(os.path.join(os.path.dirname(__file__), "../data/schemas.txt"), 'r')
+    schemas_list = json.loads(content.read())
+    content.close()
+    
+    index_rel1_att1 = list(filter(lambda x : x != None, list(map(lambda a: a[3] if (
+        a[0] == rel1 and a[1] == att1) else None, schemas_list))))[0]
+
+    index_rel2_att2 = list(filter(lambda x : x != None, list(map(lambda a: a[3] if (
+        a[0] == rel2 and a[1] == att2) else None, schemas_list))))[0]
+
+    # write logic to filter out equalized tuples and shove them into a result list
+    result = []
+    for eachTuple in rel1_data:
+        result.extend(list(filter(lambda a: a != None, list(map(lambda rel2_tuple: list(collections.OrderedDict.fromkeys(eachTuple + rel2_tuple)) if eachTuple[index_rel1_att1] == rel2_tuple[index_rel2_att2] else None , rel2_data)))))
+
+    # main join answer
+    result = list(filter(lambda a: a != [], result))
+    
     return
 
 # project("Supply",["pid"])
+# join("Products", "pid", "Supply", "pid")
