@@ -116,6 +116,21 @@ def project(rel, attList):
 
         
     # shove result into respective page files (create folders if necessary)
+    rel_path = "../data/project_"+rel+"_"+"_".join(attList)
+    os.mkdir(rel_path)
+    for i in range(math.ceil(len(result))-1):
+        temp = [result[:2]]
+        result = list(filter(lambda a: a not in temp,result))
+        page0 = page_pool_list[0]
+        page_pool_list.remove(page0)
+        f = open(os.path.join(os.path.dirname(__file__), rel_path + "/" + page0), 'w+')
+        f.write(json.dumps(temp))
+        f.close()
+
+    # rewrite page pool list
+    with open(os.path.join(os.path.dirname(__file__), "../data/pagePool.txt"),"w") as pagePoolFile:
+        pagePoolFile.write(json.dumps(page_pool_list))
+
     return
 
 def join(rel1, att1, rel2, att2):
@@ -169,6 +184,22 @@ def join(rel1, att1, rel2, att2):
     # main join answer
     result = list(filter(lambda a: a != [], result))
     
+    # shove result into respective page files (create folders if necessary)
+    rel_path = "../data/project_"+rel+"_"+"_".join(attList)
+    os.mkdir(rel_path)
+    for i in range(math.ceil(len(result))-1):
+        temp = [result[:2]]
+        result = list(filter(lambda a: a not in temp,result))
+        page0 = page_pool_list[0]
+        page_pool_list.remove(page0)
+        f = open(os.path.join(os.path.dirname(__file__), rel_path + "/" + page0), 'w+')
+        f.write(json.dump(temp))
+        f.close()
+
+    # rewrite page pool list
+    with open(os.path.join(os.path.dirname(__file__), "../data/pagePool.txt"),"w") as pagePoolFile:
+        pagePoolFile.write(json.dumps(page_pool_list))
+
     return
 
 # project("Supply",["pid"])

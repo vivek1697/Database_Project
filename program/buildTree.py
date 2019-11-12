@@ -140,7 +140,22 @@ def build(rel, att, od):
     #     print(each)
 
     # create a pass to shove into and create the files in a respective place, maybe?
-    
+
+    # write JSON to a file
+    with open(os.path.join(os.path.dirname(__file__), "../treePic/"+rel+"_"+att+".txt"),"w+") as treePicFile:
+        treePicFile.write(json.dumps(tree_json))
+
+    # shove result into respective page files (create folders if necessary)
+    rel_path = "../data/project_"+rel+"_"+"_".join(attList)
+    os.mkdir(rel_path)
+    for each in tree_json.keys():
+        f = open(os.path.join(os.path.dirname(__file__), rel_path + "/" + each), 'w+')
+        f.write(json.dumps(tree_json[each]))
+        f.close()
+
+    # rewrite page pool list
+    with open(os.path.join(os.path.dirname(__file__), "../index/pagePool.txt"),"w") as pagePoolFile:
+        pagePoolFile.write(json.dumps(page_pool_list))
 
     return
 
