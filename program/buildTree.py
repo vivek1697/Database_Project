@@ -146,10 +146,10 @@ def build(rel, att, od):
         treePicFile.write(json.dumps(tree_json))
 
     # shove result into respective page files (create folders if necessary)
-    rel_path = "../data/project_"+rel+"_"+"_".join(attList)
+    rel_path = os.path.join(os.path.dirname(__file__),"../data/project_"+rel+"_"+"_".join(attList))
     os.mkdir(rel_path)
     for each in tree_json.keys():
-        f = open(os.path.join(os.path.dirname(__file__), rel_path + "/" + each), 'w+')
+        f = open((rel_path + "/" + each), 'w+')
         f.write(json.dumps(tree_json[each]))
         f.close()
 

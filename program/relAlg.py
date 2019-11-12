@@ -4,6 +4,7 @@ import random
 import math
 import os
 import json
+import collections
 
 def select(rel, att, op, val):
 	# Import page pool
@@ -116,14 +117,15 @@ def project(rel, attList):
 
         
     # shove result into respective page files (create folders if necessary)
-    rel_path = "../data/project_"+rel+"_"+"_".join(attList)
+    rel_path = os.path.join(os.path.dirname(__file__),"../data/project_"+rel+"_"+"_".join(attList))
     os.mkdir(rel_path)
-    for i in range(math.ceil(len(result))-1):
-        temp = [result[:2]]
+    length = math.ceil(len(result)/2)
+    for i in range(length):
+        temp = result[:2]
         result = list(filter(lambda a: a not in temp,result))
         page0 = page_pool_list[0]
         page_pool_list.remove(page0)
-        f = open(os.path.join(os.path.dirname(__file__), rel_path + "/" + page0), 'w+')
+        f = open(rel_path + "/" + page0), 'w+')
         f.write(json.dumps(temp))
         f.close()
 
@@ -185,23 +187,26 @@ def join(rel1, att1, rel2, att2):
     result = list(filter(lambda a: a != [], result))
     
     # shove result into respective page files (create folders if necessary)
-    rel_path = "../data/project_"+rel+"_"+"_".join(attList)
+    rel_path = os.path.join(os.path.dirname(__file__), "../data/project_join_"+rel1+"_"+att1+"_"+rel2+"_"+att2)
     os.mkdir(rel_path)
-    for i in range(math.ceil(len(result))-1):
-        temp = [result[:2]]
+    length = math.ceil(len(result)/2)
+    for i in range(length):
+        temp = result[:2]
         result = list(filter(lambda a: a not in temp,result))
         page0 = page_pool_list[0]
         page_pool_list.remove(page0)
-        f = open(os.path.join(os.path.dirname(__file__), rel_path + "/" + page0), 'w+')
-        f.write(json.dump(temp))
+        f = open((rel_path + "/" + page0), 'w+')
+        f.write(json.dumps(temp))
         f.close()
 
     # rewrite page pool list
     with open(os.path.join(os.path.dirname(__file__), "../data/pagePool.txt"),"w") as pagePoolFile:
         pagePoolFile.write(json.dumps(page_pool_list))
 
+    # write to schemas table too
+
     return
 
 # project("Supply",["pid"])
-# join("Products", "pid", "Supply", "pid")
+join("Products", "pid", "Supply", "pid")
 # select("Suppliers", "sid", "<", "s04")
