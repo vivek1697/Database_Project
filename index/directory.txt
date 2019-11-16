@@ -1,1 +1,1 @@
-[]
+{"Suppliers_sid.txt": ["I", "nil", ["pg93.txt", "s07", "pg89.txt", "s13", "pg84.txt", "s19", "pg83.txt"]], "Supply_pid.txt": ["I", "nil", ["pg76.txt", "p07", "pg72.txt", "p13", "pg68.txt", "p19", "pg67.txt"]]}

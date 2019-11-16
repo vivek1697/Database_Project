@@ -4,6 +4,10 @@ import bPlusTreeNodeStructs # This file is VERY IMPORTANT!!! It contains helper 
 import os
 
 def build(rel, att, od):
+    if os.path.isfile(os.path.join(os.path.dirname(__file__), "../treePic/"+rel+"_"+att+".txt")):
+        print("b+ tree for given attribs already exists")
+        return
+
     # Import page pool
     content = open(os.path.join(os.path.dirname(__file__), "../index/pagePool.txt"), 'r')
     page_pool_list = json.loads(content.read())
@@ -91,7 +95,7 @@ def build(rel, att, od):
     # create a pass to insert tree pointers, i.e. pick page from page pool and assign it to nodes... and, probably create the file
     
     for eachNode in tree:
-        page = random.choice(page_pool_list)
+        page = page_pool_list[0]
         eachNode.name = page
         page_pool_list.remove(page)
         
@@ -145,9 +149,17 @@ def build(rel, att, od):
     with open(os.path.join(os.path.dirname(__file__), "../treePic/"+rel+"_"+att+".txt"),"w+") as treePicFile:
         treePicFile.write(json.dumps(tree_json))
 
+    # make directory entry
+    with open(os.path.join(os.path.dirname(__file__), "../index/directory.txt"),"r+") as directoryFile:
+        content = json.loads(directoryFile.read());
+        content[rel+"_"+att+".txt"] = tree_json[list(filter(lambda a: tree_json[a][1] == "nil", tree_json.keys()))[0]]
+        directoryFile.seek(0)
+        directoryFile.truncate(0)
+        directoryFile.write(json.dumps(content))
+
     # shove result into respective page files (create folders if necessary)
-    rel_path = os.path.join(os.path.dirname(__file__),"../data/project_"+rel+"_"+"_".join(attList))
-    os.mkdir(rel_path)
+    rel_path = os.path.join(os.path.dirname(__file__),"../index/")
+    # os.mkdir(rel_path)
     for each in tree_json.keys():
         f = open((rel_path + "/" + each), 'w+')
         f.write(json.dumps(tree_json[each]))

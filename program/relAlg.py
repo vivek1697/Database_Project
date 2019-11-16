@@ -136,6 +136,8 @@ def project(rel, attList):
     return
 
 def join(rel1, att1, rel2, att2):
+    # check if B+ tree exists on rel1_att1 or rel2_att2 and use it
+
     # Import page pool
     content = open(os.path.join(os.path.dirname(__file__), "../data/pagePool.txt"), 'r')
     page_pool_list = json.loads(content.read())
@@ -208,5 +210,5 @@ def join(rel1, att1, rel2, att2):
     return
 
 # project("Supply",["pid"])
-join("Products", "pid", "Supply", "pid")
+# join("Products", "pid", "Supply", "pid")
 # select("Suppliers", "sid", "<", "s04")
