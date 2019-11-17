@@ -1,10 +1,10 @@
 import ast
-import helper
 import random
 import math
 import os
 import json
 import collections
+import glob
 
 def select(rel, att, op, val):
 	# Import page pool
@@ -104,8 +104,14 @@ def project(rel, attList):
         tuples_in_file = json.loads(content.read())
         content.close()
         for eachTuple in tuples_in_file:
-            att_column_data.append(list(filter(lambda x: x != None,list(map(lambda a: a if eachTuple.index(a) in list(indexes.values()) else None, eachTuple)))))
+            att_column_data.append(list(filter(lambda x: x != None,list(map(lambda a: [a, next(z for z in indexes.keys() if indexes[z] == eachTuple.index(a))] if eachTuple.index(a) in list(indexes.values()) else None, eachTuple)))))
     
+    for each in att_column_data[0]:
+        indexes[each[1]] = att_column_data[0].index(each)
+
+    for index, each in enumerate(att_column_data):
+        att_column_data[index] = [item[0] for item in each]
+
     # remove duplicates from cumulative result set, i.e. [[tuple0], [tuple1], ... , [tupleN]]
     result = []
     if len(attList) == 1:
@@ -115,25 +121,57 @@ def project(rel, attList):
         # handle multiple columns differently
         result = att_column_data
 
-        
+    
+
     # shove result into respective page files (create folders if necessary)
-    rel_path = os.path.join(os.path.dirname(__file__),"../data/project_"+rel+"_"+"_".join(attList))
+    rel_path = os.path.join(os.path.dirname(__file__),"../data/")
+    file_name = "project_"+rel+"_"+"_".join(attList)
+    if len(glob.glob(rel_path + file_name + "_*")) != 0:
+        num = int(sorted(glob.glob(rel_path + file_name + "_*"))[-1].split('/')[-1].split('_')[-1])
+        file_name = file_name + "_" + str(num + 1)
+    else:
+        file_name = file_name + "_0"
+    rel_path = rel_path + file_name
     os.mkdir(rel_path)
+         
+    # insert schema entry
+    content = open(os.path.join(os.path.dirname(__file__), "../data/schemas.txt"), 'r+')
+    schemas_list = json.loads(content.read())
+    
+    new_schema = []
+    for eachAtt in attList:
+        new_schema.append(list(filter(lambda x : x != None, list(map(lambda a: [file_name, eachAtt, a[2], indexes[eachAtt]] if (
+            a[0] == rel and a[1] == eachAtt) else None, schemas_list))))[0])
+
+    schemas_list.extend(new_schema)
+    content.seek(0)
+    content.truncate(0)
+    content.write(json.dumps(schemas_list))
+    content.close()
+
+    # Write to individual pages
+    pageLink = []
     length = math.ceil(len(result)/2)
     for i in range(length):
         temp = result[:2]
         result = list(filter(lambda a: a not in temp,result))
         page0 = page_pool_list[0]
+        pageLink.append(page0)
         page_pool_list.remove(page0)
-        f = open(rel_path + "/" + page0), 'w+')
+        f = open(rel_path + "/" + page0, 'w+')
         f.write(json.dumps(temp))
         f.close()
+
+    # Write to pageLink
+    with open(rel_path + "/pageLink.txt" , "w+") as content:
+        content.write(json.dumps(pageLink))
+
 
     # rewrite page pool list
     with open(os.path.join(os.path.dirname(__file__), "../data/pagePool.txt"),"w") as pagePoolFile:
         pagePoolFile.write(json.dumps(page_pool_list))
 
-    return
+    return file_name
 
 def join(rel1, att1, rel2, att2):
     # check if B+ tree exists on rel1_att1 or rel2_att2 and use it
@@ -180,6 +218,8 @@ def join(rel1, att1, rel2, att2):
     index_rel2_att2 = list(filter(lambda x : x != None, list(map(lambda a: a[3] if (
         a[0] == rel2 and a[1] == att2) else None, schemas_list))))[0]
 
+    # store all attributes to create a schema and push it into the schema file
+
     # write logic to filter out equalized tuples and shove them into a result list
     result = []
     for eachTuple in rel1_data:
@@ -187,28 +227,56 @@ def join(rel1, att1, rel2, att2):
 
     # main join answer
     result = list(filter(lambda a: a != [], result))
-    
+
     # shove result into respective page files (create folders if necessary)
-    rel_path = os.path.join(os.path.dirname(__file__), "../data/project_join_"+rel1+"_"+att1+"_"+rel2+"_"+att2)
+    rel_path = os.path.join(os.path.dirname(__file__), "../data/")
+    file_name = "join_"+rel1+"_"+att1+"_"+rel2+"_"+att2
+    if len(glob.glob(rel_path + file_name + "_*")) != 0:
+        num = int(sorted(glob.glob(rel_path + file_name + "_*"))[-1].split('/')[-1].split('_')[-1])
+        file_name = file_name + "_" + str(num + 1)
+    else:
+        file_name = file_name + "_0"
+    rel_path = rel_path + file_name
     os.mkdir(rel_path)
+    
+    # write to schemas table too
+    content = open(os.path.join(os.path.dirname(__file__), "../data/schemas.txt"), 'r+')
+    schemas_list = json.loads(content.read())
+    new_schema = list(filter(lambda x : x != None, list(map(lambda a: [file_name, a[1], a[2], a[3]] if (
+        a[0] == rel1) else None, schemas_list)))) # for rel1 it is constant
+
+    secondary_column_schema = list(filter(lambda x : x != None, list(map(lambda a: [file_name, a[1], a[2], len(new_schema) + (a[3]-1 if a[3] > index_rel2_att2 else a[3])] if (
+        a[0] == rel2 and a[1] != att2) else None, schemas_list))))
+
+    new_schema.extend(secondary_column_schema)
+    schemas_list.extend(new_schema)
+    content.seek(0)
+    content.truncate(0)
+    content.write(json.dumps(schemas_list))
+    content.close()
+
+    pageLink = []
     length = math.ceil(len(result)/2)
     for i in range(length):
         temp = result[:2]
         result = list(filter(lambda a: a not in temp,result))
         page0 = page_pool_list[0]
+        pageLink.append(page0)
         page_pool_list.remove(page0)
         f = open((rel_path + "/" + page0), 'w+')
         f.write(json.dumps(temp))
         f.close()
 
-    # rewrite page pool list
+    # # Write to pageLink
+    with open(rel_path + "/pageLink.txt" , "w+") as content:
+        content.write(json.dumps(pageLink))
+
+    # # rewrite page pool list
     with open(os.path.join(os.path.dirname(__file__), "../data/pagePool.txt"),"w") as pagePoolFile:
         pagePoolFile.write(json.dumps(page_pool_list))
 
-    # write to schemas table too
+    return file_name
 
-    return
-
-# project("Supply",["pid"])
+# project("Supply",["sid"])
 # join("Products", "pid", "Supply", "pid")
 # select("Suppliers", "sid", "<", "s04")
