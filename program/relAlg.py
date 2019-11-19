@@ -11,8 +11,22 @@ def select(rel, att, op, val):
     if att == "cost":
         val = int(val)
 
+    opr = ""
+    if op == "=":
+        opr = op        
+    elif op == ">":
+        opr = "gt"
+    elif op == ">=":
+        opr = "gte"
+    elif op == "<":
+        opr = "lt"
+    elif op == "<=":
+        opr = "lte"
+    elif op == "!=":
+        opr = "nte"
+
     # shove result into respective page files (create folders if necessary)
-    folder_name = "select_"+rel+"_"+att+"_"+op+"_"+val
+    folder_name = "select_"+rel+"_"+att+"_"+opr+"_"+str(val)
     rel_path = os.path.join(os.path.dirname(__file__),"../data/")
     if len(glob.glob(rel_path + folder_name + "_*")) != 0:
         num = int(sorted(glob.glob(rel_path + folder_name + "_*"))[-1].split('/')[-1].split('_')[-1])
@@ -206,22 +220,22 @@ def select(rel, att, op, val):
         
         for item in att_column_data:
             if op == "=":
-                if item == val:
+                if item[index] == val:
                     selection_result.append(item)
             elif op == ">":
-                if item > val:
+                if item[index] > val:
                     selection_result.append(item)
             elif op == ">=":
-                if item >= val:
+                if item[index] >= val:
                     selection_result.append(item)
             elif op == "<":
-                if item < val:
+                if item[index] < val:
                     selection_result.append(item)
             elif op == "<=":
-                if item <= val:
+                if item[index] <= val:
                     selection_result.append(item)
             elif op == "!=":
-                if item != val:
+                if item[index] != val:
                     selection_result.append(item)
         print("Without B+ tree, on "+folder_name+" gives cost "+str(cost_b)+" pages")
 
@@ -238,7 +252,7 @@ def select(rel, att, op, val):
     length = math.ceil(len(selection_result)/2)
     for i in range(length):
         temp = selection_result[:2]
-        result = list(filter(lambda a: a not in temp,selection_result))
+        selection_result = list(filter(lambda a: a not in temp,selection_result))
         page0 = page_pool_list[0]
         pageLink.append(page0)
         page_pool_list.remove(page0)
@@ -443,10 +457,10 @@ def join(rel1, att1, rel2, att2):
                     fragments = item.split('.')
                     fetchedDataFile = fragments[0]+"."+fragments[1]
                     dataFileIndex = int(fragments[2])
-                    openDataFile = open(os.path.join(os.path.dirname(__file__), "../data/" + rel1 + "/" + fetchedDataFile),"r")
+                    openDataFile = open(os.path.join(os.path.dirname(__file__), "../data/" + rel2 + "/" + fetchedDataFile),"r")
                     dataTuple = json.loads(openDataFile.read())
                     cost_rel2_att2_b = cost_rel2_att2_b + 1
-                    rel1_data.append(dataTuple[dataFileIndex])
+                    rel2_data.append(dataTuple[dataFileIndex])
             left_key = tree_json[left_key][2]
             cost_rel2_att2_b = cost_rel2_att2_b + 1
         
@@ -455,10 +469,10 @@ def join(rel1, att1, rel2, att2):
                 fragments = item.split('.')
                 fetchedDataFile = fragments[0]+"."+fragments[1]
                 dataFileIndex = int(fragments[2])
-                openDataFile = open(os.path.join(os.path.dirname(__file__), "../data/" + rel1 + "/" + fetchedDataFile),"r")
+                openDataFile = open(os.path.join(os.path.dirname(__file__), "../data/" + rel2 + "/" + fetchedDataFile),"r")
                 dataTuple = json.loads(openDataFile.read())
                 cost_rel2_att2_b = cost_rel2_att2_b + 1
-                rel1_data.append(dataTuple[dataFileIndex])
+                rel2_data.append(dataTuple[dataFileIndex])
     else:
         # fetch all tuples in rel2 sequentially
         path = "../data/" + rel2 + "/"
@@ -517,7 +531,7 @@ def join(rel1, att1, rel2, att2):
     rel_path = os.path.join(os.path.dirname(__file__), "../data/")
     file_name = "join_"+rel1+"_"+att1+"_"+rel2+"_"+att2
     if len(glob.glob(rel_path + file_name + "_*")) != 0:
-        num = int(sorted(glob.glob(rel_path + file_name + "_*"))[-1].split('/')[-1].split('_')[-1])
+        num = int(sorted(glob.glob(rel_path + file_name + "_[0-9]*"))[-1].split('/')[-1].split('_')[-1])
         file_name = file_name + "_" + str(num + 1)
     else:
         file_name = file_name + "_0"
