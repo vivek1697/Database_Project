@@ -31,5 +31,6 @@ def fetch_sname_product_cost_for_cost_gte_47():
     return
 
 # select_supplier_name_s23_withBTree()
+# cost_of_p20_supplied_by_kiddie()
 # find_addresses_of_suppliers_who_supplied_p15()
 # fetch_sname_product_cost_for_cost_gte_47()
