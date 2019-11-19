@@ -26,10 +26,9 @@ def select(rel, att, op, val):
     
     schemasFile = open(os.path.join(os.path.dirname(__file__), "../data/schemas.txt"), 'r+')
     schemas_list = json.loads(schemasFile.read())
-    new_schema = list(filter(lambda a: a != None, list(map(lambda a: [folder_name, a[1], a[2], a[3]] if (a[0] == rel and a[1] == att) else None, schemas_list))))[0]
-    index = new_schema[3]
-    new_schema[3] = 0
-    schemas_list.append(new_schema)
+    new_schema = list(filter(lambda a: a != None, list(map(lambda a: [folder_name, a[1], a[2], a[3]] if a[0] == rel else None, schemas_list))))
+    index = list(filter(lambda a: a != None, list(map(lambda a: a[3] if (a[0] == rel and a[1] == att) else None, schemas_list))))[0]
+    schemas_list.extend(new_schema)
     schemasFile.seek(0)
     schemasFile.truncate(0)
     schemasFile.write(json.dumps(schemas_list))
@@ -190,6 +189,7 @@ def select(rel, att, op, val):
             
             cost_b = cost_b + 1
         selection_result = att_column_data
+        print("With B+ tree, on "+folder_name+" gives cost "+str(cost_b)+" pages")
     else:
         path = "../data/" + rel + "/"
         content = open(os.path.join(os.path.dirname(__file__), path + "pageLink.txt"), 'r')
@@ -201,7 +201,7 @@ def select(rel, att, op, val):
             tuples_in_file = json.loads(tupleFile.read())
             tupleFile.close()
             for eachTuple in tuples_in_file:
-                att_column_data.append(eachTuple[index])
+                att_column_data.append(eachTuple)
         
         
         for item in att_column_data:
@@ -223,7 +223,7 @@ def select(rel, att, op, val):
             elif op == "!=":
                 if item != val:
                     selection_result.append(item)
-            
+        print("Without B+ tree, on "+folder_name+" gives cost "+str(cost_b)+" pages")
 
     # Import page pool
     content = open(os.path.join(os.path.dirname(__file__), "../data/pagePool.txt"), 'r')
