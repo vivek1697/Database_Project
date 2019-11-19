@@ -1,0 +1,1 @@
+[["s03", "p29", 48.57, "Carew", "20 Scott Street"], ["s03", "p03", 34.02, "Carew", "20 Scott Street"]]

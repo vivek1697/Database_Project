@@ -1,0 +1,1 @@
+[[49.55, "Carew", "air conditioner"], [47.3, "Carter", "vacuum"]]

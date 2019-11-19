@@ -29,7 +29,7 @@ def select(rel, att, op, val):
     folder_name = "select_"+rel+"_"+att+"_"+opr+"_"+str(val)
     rel_path = os.path.join(os.path.dirname(__file__),"../data/")
     if len(glob.glob(rel_path + folder_name + "_*")) != 0:
-        num = int(sorted(glob.glob(rel_path + folder_name + "_*"))[-1].split('/')[-1].split('_')[-1])
+        num = int(sorted(glob.glob(rel_path + folder_name + "_[0-9]*"))[-1].split('/')[-1].split('_')[-1])
         folder_name = folder_name + "_" + str(num + 1)
     else:
         folder_name = folder_name + "_0"
@@ -333,7 +333,7 @@ def project(rel, attList):
     rel_path = os.path.join(os.path.dirname(__file__),"../data/")
     file_name = "project_"+rel+"_"+"_".join(attList)
     if len(glob.glob(rel_path + file_name + "_*")) != 0:
-        num = int(sorted(glob.glob(rel_path + file_name + "_*"))[-1].split('/')[-1].split('_')[-1])
+        num = int(sorted(glob.glob(rel_path + file_name + "_[0-9]*"))[-1].split('/')[-1].split('_')[-1])
         file_name = file_name + "_" + str(num + 1)
     else:
         file_name = file_name + "_0"
