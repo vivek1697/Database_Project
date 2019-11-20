@@ -1,0 +1,30 @@
+
+*** Query B. Remove the B+_tree from Suppliers.sid, and repeat Question a. ***
+
+project_select_Suppliers_sid_=_s23_0_sname_0
+
+[["Walsh"]]
+
+*** Query A. Find the name for the supplier ‘s23’ when a B+_tree exists on Suppliers.sid. ***
+
+project_select_Suppliers_sid_=_s23_1_sname_0
+
+[["Walsh"]]
+
+*** Query D. What is the cost of ‘p20’ supplied by ‘Kiddie’? ***
+
+project_select_select_join_Supply_sid_Suppliers_sid_0_sname_=_Kiddie_0_pid_=_p20_0_cost_0
+
+[[28.82]]
+
+*** Query C. Find the address of the suppliers who supplied ‘p15’. ***
+
+project_select_join_Supply_sid_Suppliers_sid_1_pid_=_p15_0_address_0
+
+[["12 Water Street"], ["20 Scott Street"], ["100 Main Road"], ["70 Forest Road"]]
+
+*** Query E. For each supplier who supplied products with a cost of 47 or higher, list his/her name, product name and the cost. ***
+
+project_select_join_join_Supply_sid_Suppliers_sid_2_pid_Products_pid_0_cost_gte_47_0_sname_pname_cost_0
+
+[[48.78, "Brown", "shovel"], [49.85, "Brown", "grill"], [49.39, "Wang", "siding"], [48.57, "Carew", "paint"], [49.55, "Carew", "air conditioner"], [47.3, "Carter", "vacuum"], [49.26, "Evoy", "matherboard"], [47.3, "Evans", "switch"], [47.81, "Lee", "fan"], [47.27, "Carter", "screwdriver"], [48.01, "kielly", "kettle"], [49.45, "Zhang", "flashlight"], [49.01, "Edward", "matherboard"], [47.62, "Edward", "monitor"], [49.66, "Newwll", "air conditioner"], [47.42, "Hayley", "usb"], [49.62, "Hayley", "flashlight"], [48.76, "Hayley", "switch"], [47.12, "Kiddie", "usb"], [47.69, "Kiddie", "sander"], [47.03, "Kieley", "matherboard"], [48.15, "Kieley", "chair"], [48.82, "Walsh", "sofa"]]

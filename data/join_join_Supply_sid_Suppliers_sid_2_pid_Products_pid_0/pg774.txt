@@ -1,1 +1,1 @@
-[["s26", "p24", 38.01, "Liu", "233 Kelly Drive", "short", "red"], ["s26", "p17", 31.0, "Liu", "233 Kelly Drive", "table", "brown"]]
+[["s25", "p06", 40.23, "Masters", "20 Cashin Ave", "air conditioner", "pink"], ["s25", "p27", 43.27, "Masters", "20 Cashin Ave", "kettle", "maroon"]]

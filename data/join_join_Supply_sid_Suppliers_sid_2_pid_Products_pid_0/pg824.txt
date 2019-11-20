@@ -1,1 +1,1 @@
-[["s02", "p26", 24.73, "Wang", "3 Elizabeth Ave", "grill", "black"], ["s02", "p30", 49.39, "Wang", "3 Elizabeth Ave", "siding", "grey"]]
+[["s01", "p26", 49.85, "Brown", "12 Water Street", "grill", "black"], ["s01", "p18", 45.92, "Brown", "12 Water Street", "sofa", "teal"]]

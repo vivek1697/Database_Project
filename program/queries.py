@@ -20,7 +20,8 @@ def find_addresses_of_suppliers_who_supplied_p15():
 def cost_of_p20_supplied_by_kiddie():
     table_name = relAlg.join("Supply", "sid", "Suppliers", "sid")
     table_name_1 = relAlg.select(table_name, "sname", "=", "Kiddie")
-    relAlg.project(table_name_1, ["cost"])
+    table_name_2 = relAlg.select(table_name_1, "pid", "=", "p20")
+    relAlg.project(table_name_2, ["cost"])
     return
 
 def fetch_sname_product_cost_for_cost_gte_47():
