@@ -8,7 +8,7 @@ def select_supplier_name_s23_withBTree():
 
 def select_name_s23():
     table_name = relAlg.select("Suppliers", "sid", "=", "s23")
-    relAlg.project("table_name",["sname"])
+    relAlg.project(table_name,["sname"])
     return
 
 def find_addresses_of_suppliers_who_supplied_p15():
@@ -31,6 +31,7 @@ def fetch_sname_product_cost_for_cost_gte_47():
     return
 
 # select_supplier_name_s23_withBTree()
+# select_name_s23()
 # cost_of_p20_supplied_by_kiddie()
 # find_addresses_of_suppliers_who_supplied_p15()
 # fetch_sname_product_cost_for_cost_gte_47()
