@@ -67,4 +67,4 @@ def removeTable(rel):
 	return
 
 # removeTree("Supply", "pid")
-# removeTable("select_Suppliers_sid_=_s23_0")    
+# removeTable("project_select_join_Supply_sid_Suppliers_sid_0_sname_=_Kiddie_0_cost_0")    
